@@ -39,7 +39,7 @@ class Vector {
     normalize() {
         let s = this.mag();
         if (s == 0) {
-            alert('unit')
+            console.error('Normalizing Unit Vector');
             return this;
         }
         this.x /= s;
