@@ -35,6 +35,14 @@
 
     <script type="module">
         // alert();
+        var KEYS = {};
+        window.addEventListener('keydown', e => {
+            KEYS[e.key] = true;
+        })
+        window.addEventListener('keyup', e => {
+            KEYS[e.key] = false;
+        })
+
         const width = 920, height = 900;
         ctx = document.getElementById('root').getContext('2d');
 
@@ -52,7 +60,7 @@
         circle.elasticity = 0.7;
 
         game.addObject(circle)
-        game.keyControl(circle)
+
 
         let line = new Line(0, 0, 0, height, 0.3, 'red');
         game.addObject(line);
@@ -65,12 +73,12 @@
 
         let lines = [
             // [0, height - 115, width, height - 115],
-            [160, height - 100, width - 150, height - 100],
+            [160, height - 100, width - 250, height - 100],
             //
-            [40, 100, 400, 200],
+            [160, 600, 400, 600],
             [700, 160, 280, 190],
-            [10, 300, 600, 400, 0.97, 'blue'],
-            [width, 300, 500, 700],
+            [0, 150, 600, 150, 0.97],
+            [width, 600, 500, 700],
             [160, 300, 160, height - 100]
         ]
         for (let line of lines) {
@@ -81,8 +89,7 @@
 
         let cell = new Cell(540, 340, 20);
         game.addObject(cell);
-
-
+        game.keyControl(cell)
 
         setTimeout(() => {
             game.init();
@@ -90,28 +97,6 @@
         }, 500)
 
 
-
-        window.addEventListener('keydown', e => {
-            if (e.key == 'd') {
-                cell.velocity.add(new Vector(3, 0))
-            }
-            if (e.key == 'a') {
-                cell.velocity.add(new Vector(-3, 0))
-            }
-            if (e.key == 'w') {
-                cell.velocity.add(new Vector(0, -3))
-            }
-            if (e.key == 's') {
-                cell.velocity.add(new Vector(0, 3))
-            }
-            if (e.key == 'q') {
-                cell.rotation += Math.PI / 6;
-            }
-            if (e.key == 'e') {
-                cell.rotation -= Math.PI / 6;
-            }
-
-        })
     </script>
 </body>
 

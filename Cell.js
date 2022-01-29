@@ -12,6 +12,8 @@ class Cell extends Circle {
         this.color = 'blue'
         console.log(ctx)
         this.rotation = 0;
+        this.friction = 0.98;
+        this.elasticity = 1;
 
     }
 

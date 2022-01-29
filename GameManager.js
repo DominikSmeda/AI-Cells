@@ -6,6 +6,14 @@ globalThis.ctxWidth = 0;
 globalThis.ctxHeight = 0;
 globalThis.ctx = null;
 
+var KEYS = {};
+window.addEventListener('keydown', e => {
+    KEYS[e.key] = true;
+})
+window.addEventListener('keyup', e => {
+    KEYS[e.key] = false;
+})
+
 class GameManager extends Engine2D {
     constructor() {
         super();
@@ -33,6 +41,7 @@ class GameManager extends Engine2D {
     }
 
     update() {
+        this.control()
         let dt = this.timer.deltaTime();
         super.update(dt);
     }
@@ -60,6 +69,23 @@ class GameManager extends Engine2D {
             this.controlObject.focused = false;
         this.controlObject = obj;
         obj.focused = true;
+    }
+
+    control() {
+        this.controlObject.acceleration.set(0, 0)
+        if (KEYS['w']) {
+            this.controlObject.acceleration = new Vector(0, 10).rotate(this.controlObject.rotation)
+        }
+        if (KEYS['s']) {
+            this.controlObject.acceleration = new Vector(0, -10).rotate(this.controlObject.rotation)
+        }
+
+        if (KEYS['d']) {
+            this.controlObject.rotation += Math.PI / 60
+        }
+        if (KEYS['a']) {
+            this.controlObject.rotation -= Math.PI / 60
+        }
     }
 
     events() {
@@ -90,7 +116,7 @@ class GameManager extends Engine2D {
                     this.controlObject.velocity.add(new Vector(1, 0))
                     break;
             }
-            console.log(this.controlObject.acceleration.mag());
+
         })
 
     }
