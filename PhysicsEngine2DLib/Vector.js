@@ -39,7 +39,7 @@ class Vector {
     normalize() {
         let s = this.mag();
         if (s == 0) {
-            alert('unit')
+            console.error('Normalizing 0 size vector')
             return this;
         }
         this.x /= s;
@@ -90,6 +90,14 @@ class Vector {
         return Math.atan2(this.det(vec), this.dot(vec))
     }
 
+    rotate(angle) {
+        let x = Math.cos(angle) * this.x - Math.sin(angle) * this.y;
+        let y = Math.sin(angle) * this.x + Math.cos(angle) * this.y;
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
     static angleBetween360(vec1, vec2) {
         let det = Number(vec1.x * vec2.y) - Number(vec1.y * vec2.x);
         let dot = Number(vec1.x * vec2.x) + Number(vec1.y * vec2.y);
@@ -99,6 +107,7 @@ class Vector {
     static dot(vec1, vec2) {
         return Number(vec1.x * vec2.x) + Number(vec1.y * vec2.y);
     }
+
 
     draw(px = 0, py = 0, color = "blue", scalar = 1) {
         ctx.save();

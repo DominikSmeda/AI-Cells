@@ -6,6 +6,7 @@ import Timer from './Timer.js';
 //PhysicalBody
 import PhysicalBody from './PhysicalBody/PhysicalBody.js';
 import Circle from './PhysicalBody/Circle.js';
+import ColidingObject from './PhysicalBody/CollidingObject.js';
 var t = new Timer();
 
 class Engine2D {
@@ -23,15 +24,16 @@ class Engine2D {
 
     }
 
-    update(dt) {
+    update(dt, data = {}) {
         for (let obj of this.objects) {
-            obj.update(dt);
+            obj.update(dt, { ...data, objects: this.objects });
         }
         // let timer = new Timer();
         this.handleCollisions();
         // console.log('handleCollision', timer.deltaTimeMs());
         for (let obj of this.objects) {
-            obj.engineTempData.lockPosition = false;
+            if (obj instanceof ColidingObject)
+                obj.engineTempData.lockPosition = false;
         }
     }
 
@@ -70,7 +72,9 @@ class Engine2D {
             // }
 
             let obj1 = this.objects[index];
+            if (!(obj1 instanceof ColidingObject)) continue;
             for (let i = index + 1; i < length; i++) {
+                if (!(this.objects[i] instanceof ColidingObject)) continue;
                 this.detectCollisionBetween(obj1, this.objects[i]);
             }
         }

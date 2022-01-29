@@ -2,6 +2,7 @@
 //Basic
 import Vector from './Vector.js';
 import Timer from './Timer.js';
+import RayCast from './RayCast.js';
 
 //PhysicalBody
 import PhysicalBody from './PhysicalBody/PhysicalBody.js';
@@ -25,6 +26,7 @@ export {
     Engine2D,
     Vector,
     Timer,
+    RayCast,
     PhysicalBody,
     Line,
     Circle,

@@ -16,6 +16,9 @@
             border: 1px solid black;
             display: block;
             margin: 0 auto;
+
+            image-rendering: crisp-edges;
+            /* image-rendering: pixelated; */
         }
     </style>
 </head>
@@ -35,109 +38,83 @@
         const width = 920, height = 900;
         ctx = document.getElementById('root').getContext('2d');
 
-        import { Engine2D, Circle, Vector, Line, Forces } from './PhysicsEngine2DLib/main.js';
+        import { Engine2D, Circle, Vector, Line, Forces, RayCast } from './PhysicsEngine2DLib/main.js';
         import GameManager from './GameManager.js';
+        import Cell from './Cell.js';
 
         let game = new GameManager();
         game.setCanvasSize(width, height);
         game.setCtx(ctx);
 
-        let gravity = new Forces.Gravity(new Vector(0, 3));
-
-        for (let i = 0; i < 100; i++) {
-            let cx = width / 2;
-            let cy = height / 2;
-            let px = Math.random() * (width - 100) + 50;
-            let py = 40;
-            let r = ((Math.random() * 10) + 0)
-            let circle = new Circle(px, py, r);
-            circle.setMass(r ** 2 * Math.PI);
-            circle.elasticity = 0.7;
-            circle.friction = 0.98;
-            // let acc = (Math.random() * 3 + 1) * 10
-            // circle.acceleration = (new Vector(cx, cy)).subtr(circle.position).normalize().mult(acc)
-            circle.applyForce(gravity)
-            game.addObject(circle)
-        }
-
-
 
         let circle = new Circle(200, 240, 28);
         circle.setMass(1000);
         circle.elasticity = 0.7;
-        circle.applyForce(gravity);
 
         game.addObject(circle)
         game.keyControl(circle)
 
-        let line = new Line(10, 10, 10, height - 10);
+        let line = new Line(0, 0, 0, height, 0.3, 'red');
         game.addObject(line);
-
-        let line2 = new Line(width - 10, 10, width - 10, height - 20);
+        let line2 = new Line(0, 0, width, 0, 0.3, 'red');
         game.addObject(line2);
-
-        let line3 = new Line(0, 10, width, 10);
+        let line3 = new Line(width, 0, width, height, 0.3, 'red');
         game.addObject(line3);
-
-        let line4 = new Line(360, height - 220, width, height - 220, 0.6, 'green');
+        let line4 = new Line(0, height, width, height, 0.3, 'red');
         game.addObject(line4);
 
         let lines = [
             // [0, height - 115, width, height - 115],
-            [0, height - 103, width, height - 103],
-            [0, height - 73, width, height - 73],
-            [0, height - 43, width, height - 43],
-            [0, height - 3, width, height - 3],
+            [160, height - 100, width - 150, height - 100],
             //
             [40, 100, 400, 200],
-            [700, 160, 280, 290],
+            [700, 160, 280, 190],
             [10, 300, 600, 400, 0.97, 'blue'],
             [width, 300, 500, 700],
-            [160, 300, 160, height]
+            [160, 300, 160, height - 100]
         ]
         for (let line of lines) {
             game.addObject(new Line(line[0], line[1], line[2], line[3], line[4], line[5]));
         }
+
+
+
+        let cell = new Cell(540, 340, 20);
+        game.addObject(cell);
+
+
+
+
+        let ray = new RayCast(new Vector(60, 60), new Vector(0, 1));
+        game.addObject(ray);
+
+
 
         setTimeout(() => {
             game.init();
             // console.log(game.objects);
         }, 500)
 
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 20000)
-
-        // let bigC = new Circle(210, 300, 60);
-        // bigC.setMass(60)
-        // game.addObject(bigC)
-
-        console.log(Vector.dot(new Vector(0, 1), new Vector(1, -1)));
-
-        let c1 = new Circle(100, 460, 20);
-        let c2 = new Circle(100, 500, 50);
 
 
-        c1.applyForce(gravity)
-        c2.applyForce(gravity);
-        c1.setMass(20 * 20 * Math.PI);
-        c2.setMass(50 * 50 * Math.PI)
-        game.addObject(c1);
-        game.addObject(c2);
-
-        line4.elasticity = 0.4;
         window.addEventListener('keydown', e => {
             if (e.key == 'd') {
-                line4.move(new Vector(3, 0))
+                ray.position.add(new Vector(3, 0))
             }
             if (e.key == 'a') {
-                line4.move(new Vector(-3, 0))
+                ray.position.add(new Vector(-3, 0))
             }
             if (e.key == 'w') {
-                line4.move(new Vector(0, -3))
+                ray.position.add(new Vector(0, -3))
             }
             if (e.key == 's') {
-                line4.move(new Vector(0, 3))
+                ray.position.add(new Vector(0, 3))
+            }
+            if (e.key == 'q') {
+                ray.directionalVec.rotate(Math.PI / 6);
+            }
+            if (e.key == 'e') {
+                ray.directionalVec.rotate(-Math.PI / 6);
             }
 
         })

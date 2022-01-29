@@ -75,19 +75,19 @@ class GameManager extends Engine2D {
                     console.log(this.controlObject.position, this.controlObject.velocity);
                     break;
                 case 'ArrowUp':
-                    this.controlObject.acceleration.add(new Vector(0, -1))
+                    this.controlObject.velocity.add(new Vector(0, -1))
                     break;
 
                 case 'ArrowDown':
-                    this.controlObject.acceleration.add(new Vector(0, 1))
+                    this.controlObject.velocity.add(new Vector(0, 1))
                     break;
 
                 case 'ArrowLeft':
-                    this.controlObject.acceleration.add(new Vector(-1, 0))
+                    this.controlObject.velocity.add(new Vector(-1, 0))
                     break;
 
                 case 'ArrowRight':
-                    this.controlObject.acceleration.add(new Vector(1, 0))
+                    this.controlObject.velocity.add(new Vector(1, 0))
                     break;
             }
             console.log(this.controlObject.acceleration.mag());

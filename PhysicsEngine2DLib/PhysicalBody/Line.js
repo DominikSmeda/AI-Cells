@@ -2,11 +2,14 @@
 import Vector from '../Vector.js';
 import Matrix from '../Matrix.js';
 import PhysicalBody from './PhysicalBody.js';
+import ColidingObject from './CollidingObject.js';
 
-class Line {
+class Line extends ColidingObject {
     constructor(x1, y1, x2, y2, frictionCoefficient = 0.98, color = 'black') {
+        super();
 
         this.type = 'Line';
+        this.collision
         this.startPoint = new Vector(x1, y1);
         this.endPoint = new Vector(x2, y2);
         this.directionalVector = this.endPoint.clone().subtr(this.startPoint).normalize();
@@ -46,7 +49,7 @@ class Line {
         ctx.strokeStyle = this.color;
         ctx.stroke();
 
-        ctx.fillRect(this.centerPoint.x, this.centerPoint.y, 4, 4)
+        // ctx.fillRect(this.centerPoint.x, this.centerPoint.y, 4, 4)
         ctx.restore();
     }
 
