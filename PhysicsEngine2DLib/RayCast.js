@@ -21,7 +21,7 @@ class RayCast {
                 if (t > 0 && t < 1 && u > 0) {
                     let point = new Vector(obj.startPoint.x + t * (obj.endPoint.x - obj.startPoint.x), obj.startPoint.y + t * (obj.endPoint.y - obj.startPoint.y));
 
-                    intersects.push(point);
+                    intersects.push({ point, distance: point.clone().subtr(position) });
                 }
             }
         }
@@ -54,16 +54,16 @@ class RayCast {
 
         ctx.restore();
 
-        for (let point of this.intersects) {
+        // for (let intersect of this.intersects) {
 
-            ctx.save();
+        //     ctx.save();
 
-            ctx.beginPath();
-            ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-            ctx.strokeStyle = 'red';
-            ctx.stroke();
-            ctx.restore();
-        }
+        //     ctx.beginPath();
+        //     ctx.arc(intersect.point.x, point.y, 5, 0, Math.PI * 2);
+        //     ctx.strokeStyle = 'red';
+        //     ctx.stroke();
+        //     ctx.restore();
+        // }
     }
 };
 

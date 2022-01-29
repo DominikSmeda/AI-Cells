@@ -84,12 +84,6 @@
 
 
 
-
-        let ray = new RayCast(new Vector(60, 60), new Vector(0, 1));
-        game.addObject(ray);
-
-
-
         setTimeout(() => {
             game.init();
             // console.log(game.objects);
@@ -99,22 +93,22 @@
 
         window.addEventListener('keydown', e => {
             if (e.key == 'd') {
-                ray.position.add(new Vector(3, 0))
+                cell.velocity.add(new Vector(3, 0))
             }
             if (e.key == 'a') {
-                ray.position.add(new Vector(-3, 0))
+                cell.velocity.add(new Vector(-3, 0))
             }
             if (e.key == 'w') {
-                ray.position.add(new Vector(0, -3))
+                cell.velocity.add(new Vector(0, -3))
             }
             if (e.key == 's') {
-                ray.position.add(new Vector(0, 3))
+                cell.velocity.add(new Vector(0, 3))
             }
             if (e.key == 'q') {
-                ray.directionalVec.rotate(Math.PI / 6);
+                cell.rotation += Math.PI / 6;
             }
             if (e.key == 'e') {
-                ray.directionalVec.rotate(-Math.PI / 6);
+                cell.rotation -= Math.PI / 6;
             }
 
         })

@@ -26,7 +26,21 @@ class Engine2D {
 
     update(dt, data = {}) {
         for (let obj of this.objects) {
-            obj.update(dt, { ...data, objects: this.objects });
+            let resultTab = obj.update(dt, { ...data, objects: this.objects });
+
+            if (resultTab instanceof Array)
+                for (let result of resultTab) {
+                    switch (result.type) {
+                        case 'Render': {
+                            this.addHelper(result.helper)
+                            break;
+                        }
+                        case 'Add Object': {
+                            this.objects.push({})
+                            break;
+                        }
+                    }
+                }
         }
         // let timer = new Timer();
         this.handleCollisions();
