@@ -6,6 +6,7 @@ import Timer from './Timer.js';
 //PhysicalBody
 import PhysicalBody from './PhysicalBody/PhysicalBody.js';
 import Circle from './PhysicalBody/Circle.js';
+import ColidingObject from './Shapes/CollidingObject.js';
 var t = new Timer();
 
 class Engine2D {
@@ -17,21 +18,38 @@ class Engine2D {
         this.lastCollisionIndex = 0;
 
         this.helpers = [];
+
+
     }
 
     init() {
 
     }
 
-    update(dt) {
+    update(dt, data = {}) {
         for (let obj of this.objects) {
-            obj.update(dt);
+            let resultTab = obj.update(dt, { ...data, objects: this.objects });
+
+            if (resultTab instanceof Array)
+                for (let result of resultTab) {
+                    switch (result.type) {
+                        case 'Render': {
+                            this.addHelper(result.helper)
+                            break;
+                        }
+                        case 'Add Object': {
+                            this.objects.push(result.object)
+                            break;
+                        }
+                    }
+                }
         }
         // let timer = new Timer();
         this.handleCollisions();
         // console.log('handleCollision', timer.deltaTimeMs());
         for (let obj of this.objects) {
-            obj.engineTempData.lockPosition = false;
+            if (obj instanceof PhysicalBody)
+                obj.engineTempData.lockPosition = false;
         }
     }
 
@@ -70,7 +88,9 @@ class Engine2D {
             // }
 
             let obj1 = this.objects[index];
+            if (!(obj1 instanceof ColidingObject)) continue;
             for (let i = index + 1; i < length; i++) {
+                if (!(this.objects[i] instanceof ColidingObject)) continue;
                 this.detectCollisionBetween(obj1, this.objects[i]);
             }
         }
@@ -82,7 +102,7 @@ class Engine2D {
         if (obj1.type == obj2.type) {
             switch (obj1.type) {
                 case 'Circle':
-                    this.colisionCircleCircle(obj1, obj2)//Todo check if direct invoke is faster
+                    this.collisionCircleCircle(obj1, obj2)//Todo check if direct invoke is faster
                     break;
 
                 default:
@@ -90,12 +110,22 @@ class Engine2D {
             }
         }
         else {
-            this.collisionLineCircle(obj1, obj2);
+            if (obj1.type == 'Line' || obj2.type == 'Line') {
+                if (obj1.type == 'Circle' || obj2.type == 'Circle')
+                    this.collisionLineCircle(obj1, obj2);
+            }
+            if (obj1.type == 'Rectangle' || obj2.type == 'Rectangle') {
+                if (obj1.type == 'Circle' || obj2.type == 'Circle') {
+                    this.collisionRectangleCircle(obj1, obj2);
+                }
+            }
+
         }
 
     }
 
-    colisionCircleCircle(c1, c2) {
+    collisionCircleCircle(c1, c2) {
+        return;
         let centerDistanceVec = c2.position.clone().subtr(c1.position)
         let centerDistance = centerDistanceVec.mag();
         let bothR = c1.radius + c2.radius;
@@ -236,6 +266,43 @@ class Engine2D {
         return line.startPoint.clone().subtr(closestVec);
 
     }
+
+    collisionRectangleCircle = (obj1, obj2) => {
+        let circle, rect;
+
+        if (obj1.type == 'Circle') {
+            circle = obj1;
+            rect = obj2;
+        }
+        else {
+            circle = obj2;
+            rect = obj1;
+        }
+
+        let dx = Math.abs(circle.position.x - rect.position.x);
+        let dy = Math.abs(circle.position.y - rect.position.y);
+
+        if (dx > (rect.width / 2 + circle.radius)) return false;
+        if (dy > (rect.height / 2 + circle.radius)) return false;
+        if ((dx <= rect.width / 2) || (dy <= rect.height / 2)) {
+            circle.collision(rect);
+            rect.collision(circle);
+
+            return true;
+        }
+
+        let cDist = (dx - rect.width / 2) ** 2 + (dy - rect.height / 2) ** 2;
+        if (cDist <= circle.r ** 2) {
+            circle.collision(rect);
+            rect.collision(circle);
+
+            return true;
+        }
+
+        return false;
+    }
+
+
 
 }
 

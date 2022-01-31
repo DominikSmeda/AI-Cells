@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        canvas {
+            border: 2px solid black;
+        }
+    </style>
+
+    <script src="./Matrix.js"></script>
+    <script src="./NeuralNet.js"></script>
+
+</head>
+
+<body>
+
+
+    <canvas id="canvas" width="900" height="900"></canvas>
+
+
+    <script>
+        const width = 900;
+        const height = 900;
+        const ctx = document.getElementById('canvas').getContext('2d');
+        ctx.transform(1, 0, 0, -1, width / 2, height / 2)
+
+        let nn = new NeuralNet(2, 2, 1);
+
+        let inputs = [1, 0];
+        let targets = [1]
+
+        // let output = nn.train(inputs, targets)
+
+        let m = new Matrix(3, 2);
+
+        let i = new Matrix(2, 1);
+        m.randomize()
+        i.randomize();
+        m.print('M');
+        i.print('INPUT');
+
+        let o = m.multiply(i);
+        o.print()
+
+    </script>
+
+</body>
+
+</html>
