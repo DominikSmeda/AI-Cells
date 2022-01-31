@@ -22,7 +22,7 @@ class RayCast {
                     if (t > 0 && t < 1 && u > 0) {
                         let point = new Vector(obj.startPoint.x + t * (obj.endPoint.x - obj.startPoint.x), obj.startPoint.y + t * (obj.endPoint.y - obj.startPoint.y));
 
-                        intersects.push({ point, distance: point.clone().subtr(position) });
+                        intersects.push({ point, distance: point.clone().subtr(position).mag() });
                     }
                 }
         }

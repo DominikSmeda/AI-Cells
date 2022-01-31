@@ -1,7 +1,7 @@
 
 import Vector from '../Vector.js';
 import Force from '../Force/Force.js';
-import ColidingObject from './CollidingObject.js';
+import ColidingObject from '../Shapes/CollidingObject.js';
 
 class PhysicalBody extends ColidingObject {
     constructor(args) {

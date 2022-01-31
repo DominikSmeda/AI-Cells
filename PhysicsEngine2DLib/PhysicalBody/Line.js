@@ -2,7 +2,7 @@
 import Vector from '../Vector.js';
 import Matrix from '../Matrix.js';
 import PhysicalBody from './PhysicalBody.js';
-import ColidingObject from './CollidingObject.js';
+import ColidingObject from '../Shapes/CollidingObject.js';
 
 class Line extends ColidingObject {
     constructor(x1, y1, x2, y2, frictionCoefficient = 0.98, color = 'black') {
@@ -66,6 +66,14 @@ class Line extends ColidingObject {
         this.startPoint.add(vec);
         this.endPoint.add(vec);
         this.updateDirectionalVector();
+    }
+
+    focus() {
+        this.color = 'blue';
+    }
+
+    unfocus() {
+        this.color = 'black';
     }
 
 }

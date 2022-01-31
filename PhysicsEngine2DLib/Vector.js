@@ -39,7 +39,7 @@ class Vector {
     normalize() {
         let s = this.mag();
         if (s == 0) {
-            console.error('Normalizing 0 size vector')
+            // console.error('Normalizing 0 size vector')
             return this;
         }
         this.x /= s;

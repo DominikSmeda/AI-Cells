@@ -135,8 +135,7 @@ class Matrix {
     randomize(fn) {
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
-                // this.matrix[r][c] = Math.random() * 2 - 1;
-                this.matrix[r][c] = Math.floor(Math.random() * 4 + 1)
+                this.matrix[r][c] = Math.random() * 2 - 1;
             }
         }
     }
@@ -156,7 +155,7 @@ class Matrix {
     map(fn) {
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
-                this.matrix[r][c] = fn(this.matrix[r][c])
+                this.matrix[r][c] = fn(this.matrix[r][c], r, c)
             }
         }
     }
@@ -167,5 +166,15 @@ class Matrix {
         return m;
     }
 
-
+    check() {
+        for (let r = 0; r < this.rows; r++) {
+            for (let c = 0; c < this.cols; c++) {
+                if (this.matrix[r][c] === undefined) {
+                    console.error('undefined value inside matrix')
+                }
+            }
+        }
+    }
 }
+
+export default Matrix;

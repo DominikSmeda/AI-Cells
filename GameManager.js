@@ -1,6 +1,7 @@
 /** @type {CanvasRenderingContext2D} */
 
 import { Engine2D, Timer, Vector } from './PhysicsEngine2DLib/main.js';
+import { Line } from './PhysicsEngine2DLib/main.js';
 
 globalThis.ctxWidth = 0;
 globalThis.ctxHeight = 0;
@@ -48,6 +49,7 @@ class GameManager extends Engine2D {
 
     render() {
         ctx.clearRect(0, 0, ctxWidth, ctxHeight);
+        // ctx.drawRect(0, 0, ctxWidth, ctxHeight, 'red')
         this.objects.forEach((obj) => {
             obj.render();
         })
@@ -72,6 +74,8 @@ class GameManager extends Engine2D {
     }
 
     control() {
+        if (!this.controlObject) return;
+
         this.controlObject.acceleration.set(0, 0)
         if (KEYS['w']) {
             this.controlObject.acceleration = new Vector(0, 10).rotate(this.controlObject.rotation)
@@ -89,6 +93,12 @@ class GameManager extends Engine2D {
     }
 
     events() {
+
+
+        let lineIndex = -1;
+        let controledPointIndex = true;
+        let controledPoint = null;
+        let controledLine = null;
         window.addEventListener('keydown', (e) => {
             switch (e.key) {
                 case 'r':
@@ -101,20 +111,54 @@ class GameManager extends Engine2D {
                     console.log(this.controlObject.position, this.controlObject.velocity);
                     break;
                 case 'ArrowUp':
-                    this.controlObject.velocity.add(new Vector(0, -1))
+                    controledPoint.add(new Vector(0, -5))
                     break;
 
                 case 'ArrowDown':
-                    this.controlObject.velocity.add(new Vector(0, 1))
+                    controledPoint.add(new Vector(0, 5))
                     break;
 
                 case 'ArrowLeft':
-                    this.controlObject.velocity.add(new Vector(-1, 0))
+                    controledPoint.add(new Vector(-5, 0))
                     break;
 
                 case 'ArrowRight':
-                    this.controlObject.velocity.add(new Vector(1, 0))
+                    controledPoint.add(new Vector(5, 0))
                     break;
+
+                case 'l':
+                    lineIndex++
+                    if (controledLine) controledLine.unfocus()
+                    let lines = this.objects.filter(el => el instanceof Line);
+                    if (lineIndex > this.objects.length - 1) lineIndex = 0;
+                    controledPoint = lines[lineIndex].startPoint;
+                    controledLine = lines[lineIndex];
+
+                    break;
+
+                case 'k':
+                    controledPointIndex = !controledPointIndex;
+                    if (controledPointIndex) {
+                        controledPoint = controledLine.startPoint;
+                    }
+                    else {
+                        controledPoint = controledLine.endPoint;
+                    }
+
+                    break;
+
+            }
+
+            if (controledPoint) {
+                controledLine.focus()
+                controledLine.updateDirectionalVector();
+                this.addHelper(() => {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(controledPoint.x, controledPoint.y, 10, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    ctx.restore();
+                })
             }
 
         })
