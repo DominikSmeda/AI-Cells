@@ -91,9 +91,9 @@ class Cell extends Circle {
         }
 
         input.push(this.velocity.mag())
-        if (this.fitness < 40) {
-            this.fitness = 0;
-        }
+        // if (this.fitness < 40) {
+        //     this.fitness = 0;
+        // }
         // console.log(intersects)
         // console.log(this.velocity);
 
@@ -143,14 +143,14 @@ class Cell extends Circle {
 
     collision(obj) {
         if (obj instanceof Rectangle) {
-            this.fitness = obj.index * 8;
+            this.fitness = obj.index * 12;
             if (obj.meta) {
                 this.stop = true;
             }
         }
-        if (obj instanceof Line && this.velocity.mag() < 0.3) {
-            this.fitness = this.fitness * 0.8;
-        }
+        // if (obj instanceof Line && this.velocity.mag() < 0.3) {
+        //     this.fitness = this.fitness * 0.8;
+        // }
     }
 }
 

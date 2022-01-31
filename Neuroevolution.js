@@ -7,11 +7,11 @@ class Neuroevolution {
     constructor(world) {
         this.population = [];
 
-        this.populationQuantity = 5;
+        this.populationQuantity = 25;
         this.world = world;
 
         this.DNAs = [];
-        this.mutationRate = Math.random() / 3;
+        this.mutationRate = 0.02//Math.random() / 3;
         console.log('MUTATION RATE:', this.mutationRate)
         this.statistics = []
         this.generation = 0;
@@ -47,7 +47,7 @@ class Neuroevolution {
 
 
         for (let i = 0; i < this.populationQuantity; i++) {
-            let cell = new Cell(sx, sy, 10);
+            let cell = new Cell(sx, sy, 15);
             if (this.generation == 0) {
                 cell.brain = new NeuralNet(Cell.inputNodes, Cell.hiddenNodes, Cell.outputNodes);
                 cell.brain.randomize();
@@ -105,9 +105,11 @@ class Neuroevolution {
         for (let i = 0; i < this.populationQuantity; i++) {
             let first = rand();
             let second;
-            // do {
-            second = rand()
-            // } while (first == second)
+            let probe = 0;
+            do {
+                second = rand()
+                probe++;
+            } while (first == second && probe < 10)
 
             mates.push([first, second])
         }

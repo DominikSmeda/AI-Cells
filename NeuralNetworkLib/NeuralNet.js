@@ -64,25 +64,13 @@ class NeuralNet {
     }
 
     mutate(rate) {
-        let totalMutation = 0;
-        this.bias_H.map((val, row, col) => {
-            if (rate > Math.random()) {
-                totalMutation++;
-                console.log('mutate')
-                return Math.random() * 2 - 1
-            }
-            return val;
-        })
 
-        this.bias_O.map((val, row, col) => {
-            if (rate > Math.random()) {
-                totalMutation++;
-                console.log('mutate')
-                return Math.random() * 2 - 1
-            }
-            return val;
-        })
-        this.check()
+        NeuralNet.mutateMatrix(this.bias_H, rate);
+        NeuralNet.mutateMatrix(this.bias_O, rate);
+        NeuralNet.mutateMatrix(this.weights_HO, rate);
+        NeuralNet.mutateMatrix(this.weights_IH, rate);
+
+        // this.check()
         // console.log('Total Mutations:', totalMutation)
         return this;
     }
@@ -98,56 +86,52 @@ class NeuralNet {
         }
 
         let nn = new NeuralNet(n1.inputNodes, n1.hiddenNodes, n1.outputNodes);
-        nn.randomize()
-        let toUse = Math.ceil(n1.bias_H.cols * n1.bias_H.rows / 2);
-        let used1 = 0;
-        let used2 = 0;
+        // nn.randomize()
 
-        nn.bias_H.map((val, row, col) => {
-            let choice = Math.floor(Math.random() * 2);
+        NeuralNet.crossMatrix(nn.bias_H, n1.bias_H, n2.bias_H);
+        NeuralNet.crossMatrix(nn.bias_O, n1.bias_O, n2.bias_O);
+        NeuralNet.crossMatrix(nn.weights_HO, n1.weights_HO, n2.weights_HO);
+        NeuralNet.crossMatrix(nn.weights_IH, n1.weights_IH, n2.weights_IH);
 
-            if ((choice == 0 && (used1 < toUse)) || used2 >= toUse) {
-                used1++;
-                return n1.bias_H.matrix[row][col];
-            }
-            else if (used2 < toUse) {
-                used2++;
-                return n2.bias_H.matrix[row][col];
-            }
-            else {
-                console.log('not compied')
-            }
-        });
-
-        toUse = Math.ceil(n1.bias_O.cols * n1.bias_O.rows / 2);
-        used1 = 0;
-        used2 = 0;
-
-        nn.bias_O.map((val, row, col) => {
-            let choice = Math.floor(Math.random() * 2);
-
-            if ((choice == 0 && (used1 < toUse)) || used2 >= toUse) {
-                used1++;
-                return n1.bias_O.matrix[row][col];
-            }
-            else if (used2 < toUse) {
-                used2++;
-                return n2.bias_O.matrix[row][col];
-            }
-            else {
-                console.log('not compied')
-            }
-        });
-
-        // console.log(toUse, used1, used2)
-        // nn.bias_O.map((val, row, col) => {
-        //     let choice = Math.floor(Math.random() * 2);
-        // });
-        nn.check()
+        // nn.check()
         return nn;
     }
 
+    static crossMatrix(m, m1, m2) {
+        let toUse = Math.ceil(m1.cols * m2.rows / 2);
+        let used1 = 0;
+        let used2 = 0;
 
+        m.map((val, row, col) => {
+            let choice = Math.floor(Math.random() * 2);
+
+            if ((choice == 0 && (used1 < toUse)) || used2 >= toUse) {
+                used1++;
+                return m1.matrix[row][col];
+            }
+            else if (used2 < toUse) {
+                used2++;
+                return m2.matrix[row][col];
+            }
+            else {
+                console.log('not compied')
+            }
+        });
+
+        return m;
+    }
+
+    static mutateMatrix(m, rate) {
+        m.map((val, row, col) => {
+            if (rate > Math.random()) {
+                console.log('mutate')
+                return Math.random() * 2 - 1
+            }
+            return val;
+        })
+
+        return m;
+    }
 }
 
 export default NeuralNet;

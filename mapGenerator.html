@@ -117,8 +117,9 @@
     <button id="generate">Generate</button>
     <!-- <button id="next"></button> -->
     <button id="reset">Reset</button>
-    <input id="iw" ondragover="" type="number" placeholder="WIDTH" min="1">X
-    <input id="ih" type="number" placeholder="HEIGHT" min="1">
+    <input id="map-name" ondragover="" type="text" placeholder="Name">X
+    <input id="iw" class="size" ondragover="" type="number" placeholder="WIDTH" min="1">X
+    <input id="ih" class="size" type="number" placeholder="HEIGHT" min="1">
   </div>
   <div id="boardGame">
     <div id="player1" class="player"></div>
@@ -248,7 +249,7 @@
       });
 
 
-      $('#controls input').on('change keyup', function () {
+      $('#controls input.size').on('change keyup', function () {
         if (this.value == '') {
           WIDTH = 5;
           HEIGHT = 5;
@@ -286,7 +287,22 @@
 
       $('#generate').on('click', function () {//START
 
-        generateMap();
+        let mapData = generateMap();
+        let name = $('#controls #map-name').val();
+
+        let sendData = {
+          name,
+          mapData
+        }
+        console.log(sendData);
+
+        fetch('http://localhost:3000/map', {
+          method: 'POST',
+          body: JSON.stringify(sendData),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
       });
 
       function NewGame() {
