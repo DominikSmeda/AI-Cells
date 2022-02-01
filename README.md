@@ -16,11 +16,12 @@ Startup Guide:
     - open browser console and start typing commands or pressing proper keys on keyboard
 
 Browser Console Commands:
-    setMutationRate(rate) - 1 for 100% probability 0.5 50% etc. You probably schouldn't use value higher than 0.05, If Agents stuck on the way try to increase rate, but when they are good try to reduce it even to the value 0.00001 or less
+    
+    - setMutationRate(rate) - 1 for 100% probability 0.5 50% etc. You probably schouldn't use value   higher than 0.05, If Agents stuck on the way try to increase rate, but when they are good try to reduce it even to the value 0.00001 or less
 
-    setPopulationQuantity(quantity) - How many agents per generation
+    - setPopulationQuantity(quantity) - How many agents per generation
 
-    saveBest(name) - saves the best DNAs from current generation so you can load them from the Settings Icon (Refresh Needed?)
+    - saveBest(name) - saves the best DNAs from current generation so you can load them from the Settings Icon (Refresh Needed?)
 
 Keyboard:
     [ Space ] - Run next generation and stops auto run 
