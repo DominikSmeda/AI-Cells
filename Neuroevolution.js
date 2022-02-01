@@ -11,7 +11,7 @@ class Neuroevolution {
         this.world = world;
 
         this.DNAs = [];
-        this.mutationRate = 0.02//Math.random() / 3;
+        this.mutationRate = 0.002//Math.random() / 3;
         console.log('MUTATION RATE:', this.mutationRate)
         this.statistics = []
         this.generation = 0;
@@ -44,13 +44,15 @@ class Neuroevolution {
 
 
 
-        this.population = [];
-        let sx = 50, sy = 60;
+
+
 
         let noPrototype = false;
-        if (this.population.length == 0) {
+        if (this.DNAs.length == 0) {
             noPrototype = true;
         }
+        this.population = [];
+        let sx = 50, sy = 60;
 
         for (let i = 0; i < this.populationQuantity; i++) {
             let cell = new Cell(sx, sy, 15);
@@ -60,6 +62,7 @@ class Neuroevolution {
             }
             else {
                 cell.brain = this.DNAs[i].brain;
+                console.log('Using Ancestors DNAs')
                 // cell.brain.weights_IH = this.DNAs[i].weights_IH;
                 // cell.brain.weights_HO = this.DNAs[i].weights_HO;
                 // cell.brain.bias_H = this.DNAs[i].bias_H;
@@ -125,6 +128,7 @@ class Neuroevolution {
 
     saveBest(amount = 1) {
         let DNAs = this.population.sort((a, b) => b.fitness - a.fitness).slice(0, amount);
+        console.log(DNAs);
         DNAs = DNAs.map(({ brain, features }) => {
             return { brain: brain.extractData(), features }
         })
@@ -134,18 +138,19 @@ class Neuroevolution {
 
     load(DNAs) {
         this.reset();
+
         this.DNAs = [];
-        this.DNAs.push(DNAs)
-        // console.log(DNAs)
-        // for (let dna of DNAs) {
-        //     this.DNAs.push({ brain: NeuralNet.fromData(dna.brain), features: dna.features });
-        // }
+        for (let i = 0; i < this.populationQuantity; i++) {
+            this.DNAs.push({ brain: NeuralNet.fromData(DNAs.brain), features: DNAs.features })
+        }
+        console.log(this.DNAs)
+        // this.selection();
     }
 
     reset() {
         this.population = [];
         this.DNAs = [];
-        this.mutationRate = 0.02
+        this.mutationRate = 0.002
         console.log('MUTATION RATE:', this.mutationRate)
         this.statistics = []
         this.generation = 0;

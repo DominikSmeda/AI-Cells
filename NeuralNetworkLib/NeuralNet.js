@@ -70,7 +70,7 @@ class NeuralNet {
         NeuralNet.mutateMatrix(this.weights_HO, rate);
         NeuralNet.mutateMatrix(this.weights_IH, rate);
 
-        // this.check()
+        this.check()
         // console.log('Total Mutations:', totalMutation)
         return this;
     }
@@ -88,7 +88,7 @@ class NeuralNet {
         NeuralNet.crossMatrix(nn.weights_HO, n1.weights_HO, n2.weights_HO);
         NeuralNet.crossMatrix(nn.weights_IH, n1.weights_IH, n2.weights_IH);
 
-        // nn.check()
+        nn.check()
         return nn;
     }
 
@@ -143,7 +143,7 @@ class NeuralNet {
     }
 
     static fromData(data) {
-        data = [...data];
+        data = { ...data };
 
         let nn = new NeuralNet(data.inputNodes, data.hiddenNodes, data.outputNodes)
 
@@ -151,6 +151,8 @@ class NeuralNet {
         nn.weights_HO = data.weights_HO;
         nn.bias_H = data.bias_H;
         nn.bias_O = data.bias_O;
+        // console.log(nn)
+        return nn;
     }
 }
 

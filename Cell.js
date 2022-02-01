@@ -34,7 +34,7 @@ class Cell extends Circle {
         this.number = Cell.count++;
 
         this.stop = false;
-        this.brain = null//= new NeuralNet(inputs, hidden, outputs);
+        this.brain = null
         // this.deltaTime = 0.5;
         this.health = 30;
 
@@ -75,6 +75,7 @@ class Cell extends Circle {
         check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 3), objects), 2);
         check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 5), objects), 3);
         check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 5), objects), 4);
+
         intersects = intersects.flat();
         let resultData = []
         for (let intersect of intersects) {
@@ -164,14 +165,14 @@ class Cell extends Circle {
 
     collision(obj) {
         if (obj instanceof Rectangle) {
-            this.fitness = obj.index * 15// + this.health;
+            this.fitness = obj.index * 12// + this.health;
             if (obj.meta) {
                 this.stop = true;
-                this.fitness += 20 //* Cell.podiumPlace--;
+                this.fitness += 30 * Cell.podiumPlace--;
             }
         }
-        if (this.fitness < 17) {
-            this.fitness = 2;
+        if (this.fitness < 13) {
+            this.fitness = 1;
         }
         // if (obj instanceof Line && this.velocity.mag()) {
 
