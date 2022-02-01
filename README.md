@@ -25,4 +25,5 @@ Browser Console Commands:
 
 Keyboard:
 > [ Space ] - Run next generation and stops auto run 
+
 > [ Enter ] - Auto run next Generations in (12s interval)
