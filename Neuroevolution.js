@@ -19,6 +19,7 @@ class Neuroevolution {
 
     async nextGeneration() {
         Cell.count = 0;
+        Cell.podiumPlaceReset();
         console.log('Next Generation')
 
         this.world.objects = this.world.objects.filter(o => !(o instanceof Cell))
@@ -34,9 +35,10 @@ class Neuroevolution {
                 generation: this.generation,
                 averageScore: sum / this.population.length
             })
-            for (let stat of this.statistics) {
-                console.log(`Generation ${stat.generation}: Average Score: ${stat.averageScore}`)
-            }
+            // for (let stat of this.statistics) {   
+            //     console.log(`Generation ${stat.generation}: Average Score: ${stat.averageScore}`)
+            // }
+            console.log(`Generation ${this.statistics[this.statistics.length - 1].generation}: Average Score: ${this.statistics[this.statistics.length - 1].averageScore}`)
             this.selection();
         }
 
@@ -45,21 +47,25 @@ class Neuroevolution {
         this.population = [];
         let sx = 50, sy = 60;
 
+        let noPrototype = false;
+        if (this.population.length == 0) {
+            noPrototype = true;
+        }
 
         for (let i = 0; i < this.populationQuantity; i++) {
             let cell = new Cell(sx, sy, 15);
-            if (this.generation == 0) {
+            if (noPrototype) {
                 cell.brain = new NeuralNet(Cell.inputNodes, Cell.hiddenNodes, Cell.outputNodes);
                 cell.brain.randomize();
             }
             else {
-                cell.brain = this.DNAs[i];
+                cell.brain = this.DNAs[i].brain;
                 // cell.brain.weights_IH = this.DNAs[i].weights_IH;
                 // cell.brain.weights_HO = this.DNAs[i].weights_HO;
                 // cell.brain.bias_H = this.DNAs[i].bias_H;
                 // cell.brain.bias_O = this.DNAs[i].bias_O;
             }
-            // console.log(cell.brain)
+
             this.world.addObject(cell)
             this.population.push(cell)
         }
@@ -81,7 +87,7 @@ class Neuroevolution {
             let nn = NeuralNet.cross(brains[mates[i][0]], brains[mates[i][1]]);
             // console.log(nn)
             nn.mutate(this.mutationRate);
-            this.DNAs.push(nn);
+            this.DNAs.push({ brain: nn });
         }
 
         // console.log(this.DNAs)
@@ -109,7 +115,7 @@ class Neuroevolution {
             do {
                 second = rand()
                 probe++;
-            } while (first == second && probe < 10)
+            } while (first == second && probe < 3)
 
             mates.push([first, second])
         }
@@ -117,6 +123,51 @@ class Neuroevolution {
         return mates;
     }
 
+    saveBest(amount = 1) {
+        let DNAs = this.population.sort((a, b) => b.fitness - a.fitness).slice(0, amount);
+        DNAs = DNAs.map(({ brain, features }) => {
+            return { brain: brain.extractData(), features }
+        })
+
+        return DNAs;
+    }
+
+    load(DNAs) {
+        this.reset();
+        this.DNAs = [];
+        this.DNAs.push(DNAs)
+        // console.log(DNAs)
+        // for (let dna of DNAs) {
+        //     this.DNAs.push({ brain: NeuralNet.fromData(dna.brain), features: dna.features });
+        // }
+    }
+
+    reset() {
+        this.population = [];
+        this.DNAs = [];
+        this.mutationRate = 0.02
+        console.log('MUTATION RATE:', this.mutationRate)
+        this.statistics = []
+        this.generation = 0;
+    }
+
+    update() {
+        if (!this.population.length) return;
+        let population = this.population.sort((a, b) => b.fitness - a.fitness);
+
+
+        for (let i = 0; i < population.length; i++) {
+            population[i].color = 'blue'
+            population[i].text = i + 1;
+        }
+        population[0].color = 'green'
+        population[1].color = 'yellow'
+        population[2].color = 'purple'
+    }
+
+    render() {
+
+    }
 }
 
 export default Neuroevolution;

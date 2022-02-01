@@ -76,13 +76,8 @@ class NeuralNet {
     }
 
     static cross(n1, n2) {
-        try {
-            if (n1.inputNodes != n2.inputNodes || n1.hiddenNodes != n2.hiddenNodes || n1.outputNodes != n2.outputNodes) {
-                return Error('Diffrent sizes of Neural Nets')
-            }
-        } catch (err) {
-            console.log(err)
-            console.log(n1, n2)
+        if (n1.inputNodes != n2.inputNodes || n1.hiddenNodes != n2.hiddenNodes || n1.outputNodes != n2.outputNodes) {
+            return Error('Diffrent sizes of Neural Nets')
         }
 
         let nn = new NeuralNet(n1.inputNodes, n1.hiddenNodes, n1.outputNodes);
@@ -131,6 +126,31 @@ class NeuralNet {
         })
 
         return m;
+    }
+
+    extractData() {
+        let data = {
+            inputNodes: this.inputNodes,
+            hiddenNodes: this.hiddenNodes,
+            outputNodes: this.outputNodes,
+            weights_IH: this.weights_IH,
+            weights_HO: this.weights_HO,
+            bias_H: this.bias_H,
+            bias_O: this.bias_O
+        }
+
+        return { ...data }
+    }
+
+    static fromData(data) {
+        data = [...data];
+
+        let nn = new NeuralNet(data.inputNodes, data.hiddenNodes, data.outputNodes)
+
+        nn.weights_IH = data.weights_IH;
+        nn.weights_HO = data.weights_HO;
+        nn.bias_H = data.bias_H;
+        nn.bias_O = data.bias_O;
     }
 }
 

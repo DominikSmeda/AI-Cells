@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const Database = require('./Database.js');
-const Brain = require('./Brain.js').Brain;
-const Map = require('./Map.js').Map;
+const Brain = require('./models/Brain.js').Brain;
+const Map = require('./models/Map.js').Map;
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/brain-hub"
 const PORT = 3000;
@@ -22,8 +22,8 @@ app.use(bodyParser.json())
 app.use(express.static('static'));
 
 
-app.get('/brain/list', async (req, res, next) => {
-    let brains = await Brain.find({}).select('name');
+app.get('/brain', async (req, res, next) => {
+    let brains = await Brain.find({});
 
     res.status(200).json({
         brains
