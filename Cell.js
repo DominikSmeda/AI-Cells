@@ -115,11 +115,11 @@ class Cell extends Circle {
         if (output[0] > 0.5) {
             this.acceleration = new Vector(0, -6).rotate(this.rotation)
         }
-        if (output[1] < 0.5) {
+        if (output[0] < 0.5) {
             this.acceleration = new Vector(0, 6).rotate(this.rotation)
         }
 
-        if (output[0] > 0.5) {
+        if (output[1] > 0.5) {
             this.rotation += Math.PI / 80
         }
         if (output[1] < 0.5) {
