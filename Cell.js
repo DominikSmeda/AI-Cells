@@ -6,6 +6,7 @@ import Rectangle from "./PhysicsEngine2DLib/Shapes/Rectangle.js";
 // const img = new Image();
 // img.src = './assets/red-blood-cell.png';
 // const imageScale = 3.2;
+//TODO: Zindex for map and podium place
 function sigmoid(x) {
     return 1 / (1 + Math.exp(-x));
 }
@@ -36,7 +37,7 @@ class Cell extends Circle {
         this.stop = false;
         this.brain = null
         // this.deltaTime = 0.5;
-        this.health = 30;
+        this.health = 300;
 
         this.lastDeltaTime = 0;
 
@@ -46,9 +47,7 @@ class Cell extends Circle {
 
     update(dt, { objects }) {
         super.update(dt);
-        if (this.stop) {
-            return;
-        }
+
         // this.lastDeltaTime += dt;
         // if (this.lastDeltaTime > this.deltaTime) {
         //     this.lastDeltaTime = 0;
@@ -110,6 +109,9 @@ class Cell extends Circle {
 
         this.acceleration.set(0, 0)
 
+        if (this.stop) {
+            return;
+        }
         if (output[0] > 0.5) {
             this.acceleration = new Vector(0, -6).rotate(this.rotation)
         }
@@ -128,6 +130,8 @@ class Cell extends Circle {
     }
 
     render() {
+        this.fitness = Math.floor(this.fitness)
+        this.health = Math.floor(this.health)
         ctx.save();
 
         ctx.beginPath();
@@ -135,6 +139,7 @@ class Cell extends Circle {
         // if (this.fitness >= 40) {
         //     ctx.fillStyle = 'green'
         // }
+        // ctx.globalAlpha = 0.4;
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 4;
         ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
@@ -145,8 +150,8 @@ class Cell extends Circle {
         ctx.arc(this.position.x, this.position.y, this.radius, this.rotation + Math.PI / 2 - Math.PI / 5, this.rotation + Math.PI / 2 + Math.PI / 5);
         ctx.strokeStyle = 'red';
         ctx.stroke();
-
-        ctx.font = "10px Arial";
+        // ctx.globalAlpha = 0.5
+        ctx.font = "11px Arial";
         ctx.strokeStyle = 'black';
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
@@ -159,27 +164,45 @@ class Cell extends Circle {
         ctx.textAlign = "center";
         ctx.strokeText(this.text, this.position.x, this.position.y + this.radius / 2);
         ctx.fillText(this.text, this.position.x, this.position.y + this.radius / 2);
+
+        ctx.font = "11px Arial";
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = "lightgreen";
+        ctx.textAlign = "center";
+        ctx.strokeText(this.health, this.position.x, this.position.y + this.radius);
+        ctx.fillText(this.health, this.position.x, this.position.y + this.radius);
         // ctx.drawImage(img, -this.radius * imageScale / 2, -this.radius * imageScale / 2, this.radius * imageScale, this.radius * imageScale)
         ctx.restore();
     }
 
     collision(obj) {
+
+
         if (obj instanceof Rectangle) {
-            this.fitness = obj.index * 12// + this.health;
+            this.fitness = obj.index * 25 //+ this.health;
+
             if (obj.meta) {
                 this.stop = true;
-                this.fitness += 30 * Cell.podiumPlace--;
+                if (Cell.podiumPlace >= 0)
+                    this.fitness += 50 * Cell.podiumPlace--;
             }
         }
-        if (this.fitness < 13) {
+        if (this.stop) return;
+        if (this.fitness < 30) {
             this.fitness = 1;
         }
-        // if (obj instanceof Line && this.velocity.mag()) {
 
-        //     this.health -= 1
-        //     if (this.health < 0)
-        //         this.health = 0;
-        // }
+        if (obj instanceof Line) {
+            // this.fitness = 0;
+            this.health -= this.velocity.mag();
+            if (this.health <= 0) {
+                // this.position.set(60, 60)
+                this.health = 0;
+                this.stop = true;
+                this.velocity.set(0, 0)
+            }
+
+        }
     }
 }
 

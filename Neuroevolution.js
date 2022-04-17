@@ -118,7 +118,7 @@ class Neuroevolution {
             do {
                 second = rand()
                 probe++;
-            } while (first == second && probe < 3)
+            } while (first == second && probe < 2)
 
             mates.push([first, second])
         }

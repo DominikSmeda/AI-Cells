@@ -73,6 +73,8 @@
 
         #settings .list {
             padding: 10px;
+            overflow: auto;
+            height: 470px;
         }
 
         #settings .list .element {
@@ -85,6 +87,27 @@
         #settings .list .element:hover {
             background-color: rgba(0, 0, 0, 0.453);
             color: white
+        }
+
+        #settings #save-dna {
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #settings #save-dna input[type="number"] {
+            width: 50px;
+
+        }
+
+        #settings #save-dna input[type="text"] {
+            width: 220px;
+
+        }
+
+        #settings #save-dna input {
+            height: 40px;
         }
     </style>
 </head>
@@ -109,6 +132,11 @@
             </div>
             <div class="list">
 
+            </div>
+            <div id="save-dna">
+                <input type="text">
+                <input type="number" min="1" max="1" value="1">
+                <button>Save Best</button>
             </div>
         </div>
     </div>
@@ -252,9 +280,9 @@
             neuroevolution.populationQuantity = quantity;
         }
 
-        window.loadMap = (index) => {
-            loadMap(index);
-        }
+        // window.loadMap = (index) => {
+        //     loadMap(index);
+        // }
 
         window.saveBest = (name, amount = 1) => {
             let DNAs = neuroevolution.saveBest(amount);
