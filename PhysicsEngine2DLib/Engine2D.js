@@ -7,7 +7,7 @@ import Timer from './Timer.js';
 import PhysicalBody from './PhysicalBody/PhysicalBody.js';
 import Circle from './PhysicalBody/Circle.js';
 import ColidingObject from './Shapes/CollidingObject.js';
-var t = new Timer();
+
 
 class Engine2D {
     constructor() {
@@ -61,11 +61,12 @@ class Engine2D {
     }
 
     addObject(obj) {
-        if (obj.type == 'Line') {
-            this.objects.unshift(obj)
-        } else {
-            this.objects.push(obj);
-        }
+        this.objects.push(obj);
+
+    }
+
+    addObjects(objs) {
+        this.objects = this.objects.concat(objs);
     }
 
     addHelper(fun) {

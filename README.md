@@ -17,7 +17,7 @@ Startup Guide:
 
 Browser Console Commands:
     
-> setMutationRate(rate) - 1 for 100% probability 0.5 50% etc. You probably schouldn't use value   higher than 0.05, If Agents stuck on the way try to increase rate, but when they are good try to reduce it even to the value 0.00001 or less
+> setMutationRate(rate) - 1 for 100% probability 0.5 50% etc. You probably shouldn't use value   higher than 0.05, If Agents stuck on the way try to increase rate, but when they are good try to reduce it even to the value 0.00001 or less
 
 > setPopulationQuantity(quantity) - How many agents per generation
 
@@ -27,3 +27,5 @@ Keyboard:
 > [ Space ] - Run next generation and stops auto run 
 
 > [ Enter ] - Auto run next Generations in (12s interval)
+
+> [ Backspace ] - Stops Auto run

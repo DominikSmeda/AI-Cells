@@ -4,31 +4,32 @@ import Cell from './Cell.js';
 
 
 class Neuroevolution {
-    constructor(world) {
+    constructor() {
         this.population = [];
 
         this.populationQuantity = 25;
-        this.world = world;
 
         this.DNAs = [];
         this.mutationRate = 0.002//Math.random() / 3;
         console.log('MUTATION RATE:', this.mutationRate)
         this.statistics = []
         this.generation = 0;
+
+        this.events = {}
     }
 
     async nextGeneration() {
         Cell.count = 0;
         Cell.podiumPlaceReset();
-        console.log('Next Generation')
+        await this.emit('next-generation')
 
-        this.world.objects = this.world.objects.filter(o => !(o instanceof Cell))
+        console.log('Next Generation')
 
 
         if (this.generation != 0) {
             let sum = 0;
             for (let i = 0; i < this.population.length; i++) {
-                sum += this.population[i].fitness;
+                sum += this.population[i].calcFitness();
             }
 
             this.statistics.push({
@@ -41,10 +42,6 @@ class Neuroevolution {
             console.log(`Generation ${this.statistics[this.statistics.length - 1].generation}: Average Score: ${this.statistics[this.statistics.length - 1].averageScore}`)
             this.selection();
         }
-
-
-
-
 
 
         let noPrototype = false;
@@ -69,18 +66,18 @@ class Neuroevolution {
                 // cell.brain.bias_O = this.DNAs[i].bias_O;
             }
 
-            this.world.addObject(cell)
             this.population.push(cell)
         }
 
         this.generation++;
+        await this.emit('next-generation-ready')
     }
 
     selection() {
-        this.population = this.population.sort((a, b) => b.fitness - a.fitness);
+        this.population = this.population.sort((a, b) => b.calcFitness() - a.calcFitness());
 
         let brains = this.population.map(el => el.brain);
-        let fitness = this.population.map(el => el.fitness)//.slice(0, this.population.length / 3);
+        let fitness = this.population.map(el => el.calcFitness())//.slice(0, this.population.length / 3);
         let mates = this.pair(fitness)
         // console.log(fitness)
 
@@ -127,7 +124,7 @@ class Neuroevolution {
     }
 
     saveBest(amount = 1) {
-        let DNAs = this.population.sort((a, b) => b.fitness - a.fitness).slice(0, amount);
+        let DNAs = this.population.sort((a, b) => b.calcFitness() - a.calcFitness()).slice(0, amount);
         console.log(DNAs);
         DNAs = DNAs.map(({ brain, features }) => {
             return { brain: brain.extractData(), features }
@@ -136,12 +133,12 @@ class Neuroevolution {
         return DNAs;
     }
 
-    load(DNAs) {
+    load(DNA) {
         this.reset();
-
+        console.log('Loading DNA')
         this.DNAs = [];
         for (let i = 0; i < this.populationQuantity; i++) {
-            this.DNAs.push({ brain: NeuralNet.fromData(DNAs.brain), features: DNAs.features })
+            this.DNAs.push({ brain: NeuralNet.fromData(DNA.brain), features: DNA.features })
         }
         console.log(this.DNAs)
         // this.selection();
@@ -156,9 +153,10 @@ class Neuroevolution {
         this.generation = 0;
     }
 
-    update() {
+    update(dt) {
+
         if (!this.population.length) return;
-        let population = this.population.sort((a, b) => b.fitness - a.fitness);
+        let population = this.population.sort((a, b) => b.calcFitness() - a.calcFitness());
 
 
         for (let i = 0; i < population.length; i++) {
@@ -172,6 +170,19 @@ class Neuroevolution {
 
     render() {
 
+    }
+
+    async emit(eventName, ...args) {
+        if (this.events[eventName])
+            await this.events[eventName](...args)
+    }
+
+    on(eventName, func) {
+        this.events[eventName] = func;
+    }
+
+    off(eventName) {
+        delete this.events[eventName];
     }
 }
 

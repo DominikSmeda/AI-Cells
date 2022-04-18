@@ -15,12 +15,19 @@ const PODIUM_PLACE = 3;
 
 class Cell extends Circle {
     static count = 0;
-    static inputNodes = 6;
+    static inputNodes = 8;
     static hiddenNodes = 5;
     static outputNodes = 2;
     static podiumPlace = PODIUM_PLACE;
+    static startTime = 0;
+
     static podiumPlaceReset() {
         Cell.podiumPlace = PODIUM_PLACE;
+    }
+
+    static start() {
+        console.log('START__________________')
+        Cell.startTime = Date.now();
     }
 
     constructor(x, y, r) {
@@ -36,9 +43,10 @@ class Cell extends Circle {
 
         this.stop = false;
         this.brain = null
-        // this.deltaTime = 0.5;
-        this.health = 300;
 
+        this.health = Math.random() * 40 + 20;
+
+        this.updateFrequency = 0;
         this.lastDeltaTime = 0;
 
         this.lastSquareIndex = 0;
@@ -48,13 +56,15 @@ class Cell extends Circle {
     update(dt, { objects }) {
         super.update(dt);
 
-        // this.lastDeltaTime += dt;
-        // if (this.lastDeltaTime > this.deltaTime) {
-        //     this.lastDeltaTime = 0;
-        // }
-        // else {
-        //     return;
-        // }
+        this.lastDeltaTime += dt;
+
+        if (this.lastDeltaTime > this.updateFrequency) {
+            // console.log(this.lastDeltaTime)
+            this.lastDeltaTime = 0;
+        }
+        else {
+            return;
+        }
 
         let intersects = [];
 
@@ -65,15 +75,16 @@ class Cell extends Circle {
                 input[index] = r[0].distance;
             }
             else {
-                input[index] = 1000;
+                //out of track
+                input[index] = 10000;
             }
         }
 
         check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation), objects), 0);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 3), objects), 1);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 3), objects), 2);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 5), objects), 3);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 5), objects), 4);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 2), objects), 1);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 2), objects), 2);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 4), objects), 3);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 4), objects), 4);
 
         intersects = intersects.flat();
         let resultData = []
@@ -100,6 +111,8 @@ class Cell extends Circle {
         }
 
         input.push(this.velocity.mag())
+        input.push(this.velocity.angleBetween360(new Vector(0, 1).rotate(this.rotation)))
+        input.push(this.health)
 
         // console.log(intersects)
         // console.log(this.velocity);
@@ -112,11 +125,14 @@ class Cell extends Circle {
         if (this.stop) {
             return;
         }
+
+        this.velocity.set(0, 20).rotate(this.rotation)
+
         if (output[0] > 0.5) {
-            this.acceleration = new Vector(0, -6).rotate(this.rotation)
+            //    this.acceleration = new Vector(0, -5).rotate(this.rotation)
         }
         if (output[0] < 0.5) {
-            this.acceleration = new Vector(0, 6).rotate(this.rotation)
+            // this.acceleration = new Vector(0, 5).rotate(this.rotation)
         }
 
         if (output[1] > 0.5) {
@@ -155,8 +171,8 @@ class Cell extends Circle {
         ctx.strokeStyle = 'black';
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
-        ctx.strokeText(this.fitness, this.position.x, this.position.y - this.radius / 1.5);
-        ctx.fillText(this.fitness, this.position.x, this.position.y - this.radius / 1.5);
+        ctx.strokeText(this.calcFitness(), this.position.x, this.position.y - this.radius / 1.5);
+        ctx.fillText(this.calcFitness(), this.position.x, this.position.y - this.radius / 1.5);
 
         ctx.font = "20px Arial";
         ctx.strokeStyle = 'black';
@@ -171,15 +187,26 @@ class Cell extends Circle {
         ctx.textAlign = "center";
         ctx.strokeText(this.health, this.position.x, this.position.y + this.radius);
         ctx.fillText(this.health, this.position.x, this.position.y + this.radius);
+
+        // ctx.translate(this.position.x, this.position.y)
         // ctx.drawImage(img, -this.radius * imageScale / 2, -this.radius * imageScale / 2, this.radius * imageScale, this.radius * imageScale)
+
         ctx.restore();
     }
 
     collision(obj) {
 
+        if (this.stop) return;
 
         if (obj instanceof Rectangle) {
-            this.fitness = obj.index * 25 //+ this.health;
+            if (obj.index == this.lastSquareIndex) return;
+            this.lastSquareIndex = obj.index;
+
+
+            let delta = (Date.now() - Cell.startTime) / 1000
+            // console.log(delta)
+            // this.fitness = Math.pow(obj.index, 1.8) * 2 //+ this.health;
+            this.fitness = Math.pow(obj.index, 1.8) * 3 + 3 * (obj.index * Math.pow(obj.index + 1, 2) / delta);
 
             if (obj.meta) {
                 this.stop = true;
@@ -187,14 +214,12 @@ class Cell extends Circle {
                     this.fitness += 50 * Cell.podiumPlace--;
             }
         }
-        if (this.stop) return;
-        if (this.fitness < 30) {
-            this.fitness = 1;
-        }
+
 
         if (obj instanceof Line) {
             // this.fitness = 0;
             this.health -= this.velocity.mag();
+
             if (this.health <= 0) {
                 // this.position.set(60, 60)
                 this.health = 0;
@@ -204,6 +229,12 @@ class Cell extends Circle {
 
         }
     }
+
+    calcFitness() {
+        if (this.fitness < 10) return 1
+        return this.fitness //+ this.health * 1
+    }
+
 }
 
 export default Cell;

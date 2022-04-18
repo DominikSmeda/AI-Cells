@@ -1,7 +1,7 @@
 /** @type {CanvasRenderingContext2D} */
 
-import { Engine2D, Timer, Vector } from './PhysicsEngine2DLib/main.js';
-import { Line } from './PhysicsEngine2DLib/main.js';
+import { Engine2D, Timer, Vector, Line, Shapes } from './PhysicsEngine2DLib/main.js';
+
 
 globalThis.ctxWidth = 0;
 globalThis.ctxHeight = 0;
@@ -21,6 +21,9 @@ class GameManager extends Engine2D {
 
         this.timer = new Timer();
         this.controlObject = null;
+
+
+        this.onUpdate = null;
     }
 
     init() {
@@ -45,6 +48,10 @@ class GameManager extends Engine2D {
         this.control()
         let dt = this.timer.deltaTime();
         super.update(dt);
+
+        if (this.onUpdate) {
+            this.onUpdate(dt);
+        }
     }
 
     render() {
@@ -163,6 +170,31 @@ class GameManager extends Engine2D {
 
         })
 
+    }
+
+    loadMap(map) {
+        this.objects = [];
+        // game.objects = game.objects.filter(el => (el instanceof Cell))
+        // console.log(game.objects)
+        console.log('Map: ' + map.name)
+
+
+        for (let i = 0; i < map.mapData.squares.length; i++) {
+            let square = map.mapData.squares[i];
+
+            let rect = new Shapes.Rectangle(square.x, square.y, map.mapData.size, map.mapData.size, '#f3fa98', 'white');
+            rect.index = i;
+            if (i == map.mapData.squares.length - 1) {
+                rect.meta = true;
+            }
+
+            this.addObject(rect)
+        }
+
+        for (let pos of map.mapData.lines) {
+            let line = new Line(pos[0], pos[1], pos[2], pos[3], 0.5, 'black');
+            this.addObject(line)
+        }
     }
 }
 

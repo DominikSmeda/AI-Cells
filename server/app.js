@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const Database = require('./Database.js');
-const Brain = require('./models/Brain.js').Brain;
+const DNA = require('./models/DNA.js').DNA;
 const Map = require('./models/Map.js').Map;
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/brain-hub"
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/brain-hub";
 const PORT = 3000;
 
 const dbConnection = new Database(MONGODB_URI)
@@ -22,19 +22,19 @@ app.use(bodyParser.json())
 app.use(express.static('static'));
 
 
-app.get('/brain', async (req, res, next) => {
-    let brains = await Brain.find({});
+app.get('/dnas', async (req, res, next) => {
+    let dnas = await DNA.find({});
 
     res.status(200).json({
-        brains
+        dnas
     })
 
 })
 
-app.get('/brain/:id', async (req, res, next) => {
-    let brains = await Nrain.find({ _id: req.params / id });
-    if (brains.length) {
-        res.status(200).json({ brain: brains[0] })
+app.get('/dnas/:id', async (req, res, next) => {
+    let dnas = await DNA.find({ _id: req.params / id });
+    if (dnas.length) {
+        res.status(200).json({ dna: dnas[0] })
     }
     else {
         res.status(400).json({ error: 'Cannot find brain with this id' });
@@ -42,24 +42,25 @@ app.get('/brain/:id', async (req, res, next) => {
 
 })
 
-app.delete('/brain/:id', async (req, res, next) => {
-    await Brain.deleteOne({ _id: req.params.id });
+app.delete('/dnas/:id', async (req, res, next) => {
+    await DNA.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: 'ok' })
 })
 
-app.post('/brain', async (req, res, next) => {
-    const { name, brain } = req.body;
+app.post('/dnas', async (req, res, next) => {
+    const { name, brain, features } = req.body;
 
-    let newBrain = new Brain({
+    let newDNA = new DNA({
         name,
-        brain
+        brain,
+        features
     })
 
-    await newBrain.save();
+    await newDNA.save();
     res.status(200).json({ message: 'ok' })
 })
 
-app.post('/map', async (req, res, next) => {
+app.post('/maps', async (req, res, next) => {
     const { name, mapData } = req.body;
 
     let map = new Map({
@@ -73,7 +74,7 @@ app.post('/map', async (req, res, next) => {
 
 })
 
-app.get('/map', async (req, res, next) => {
+app.get('/maps', async (req, res, next) => {
 
     let maps = await Map.find({});
 
@@ -82,7 +83,7 @@ app.get('/map', async (req, res, next) => {
     })
 })
 
-app.delete('/map/:id', async (req, res, next) => {
+app.delete('/maps/:id', async (req, res, next) => {
     await Map.deleteOne({ _id: req.params.id });
     res.status(200).json({ message: 'ok' })
 })

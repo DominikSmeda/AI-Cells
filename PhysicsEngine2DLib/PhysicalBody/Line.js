@@ -42,7 +42,7 @@ class Line extends ColidingObject {
 
     render() {
         ctx.save();
-        ctx.lineWidth = '3'
+        ctx.lineWidth = '2'
         ctx.beginPath();
         ctx.moveTo(this.startPoint.x, this.startPoint.y);
         ctx.lineTo(this.endPoint.x, this.endPoint.y);
