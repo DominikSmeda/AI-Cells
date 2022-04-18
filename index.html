@@ -196,7 +196,7 @@
         MAPS = MAPS.map(data => JSON.parse(data));
 
         let DNAs = []
-
+        window.autoInterval = 15;
 
         let neuroevolution = new Neuroevolution();
 
@@ -223,7 +223,7 @@
                 neuroevolution.nextGeneration();
                 timer = setInterval(() => {
                     neuroevolution.nextGeneration();
-                }, 12000);
+                }, window.autoInterval * 1000);
             }
             if (e.key == 'Backspace') {
                 console.log('Stop auto next generation')
@@ -293,7 +293,7 @@
                 })
         }
         downloadMaps();
-
+        window.downloadMaps = downloadMaps
         function downloadDNAs() {
             fetch('http://localhost:3000/dnas')
                 .then(r => r.json())

@@ -16,7 +16,7 @@ const PODIUM_PLACE = 3;
 class Cell extends Circle {
     static count = 0;
     static inputNodes = 8;
-    static hiddenNodes = 5;
+    static hiddenNodes = 8;
     static outputNodes = 2;
     static podiumPlace = PODIUM_PLACE;
     static startTime = 0;
@@ -44,7 +44,7 @@ class Cell extends Circle {
         this.stop = false;
         this.brain = null
 
-        this.health = Math.random() * 40 + 20;
+        this.health = 1//Math.random() * 40 + 20;
 
         this.updateFrequency = 0;
         this.lastDeltaTime = 0;
@@ -111,8 +111,10 @@ class Cell extends Circle {
         }
 
         input.push(this.velocity.mag())
-        input.push(this.velocity.angleBetween360(new Vector(0, 1).rotate(this.rotation)))
-        input.push(this.health)
+        input.push(this.acceleration.angleBetween360(this.velocity))
+        input.push(this.acceleration.mag())
+        // input
+        // input.push(this.health)
 
         // console.log(intersects)
         // console.log(this.velocity);
@@ -126,14 +128,15 @@ class Cell extends Circle {
             return;
         }
 
-        this.velocity.set(0, 20).rotate(this.rotation)
+        // this.velocity.set(0, 30).rotate(this.rotation)
 
-        if (output[0] > 0.5) {
-            //    this.acceleration = new Vector(0, -5).rotate(this.rotation)
-        }
-        if (output[0] < 0.5) {
-            // this.acceleration = new Vector(0, 5).rotate(this.rotation)
-        }
+        // if (output[0] > 0.5) {
+        this.acceleration = new Vector(0, -6 * (output[0] - 0.5)).rotate(this.rotation)
+
+        // }
+        // if (output[0] < 0.5) {
+        //     this.acceleration = new Vector(0, 5).rotate(this.rotation)
+        // }
 
         if (output[1] > 0.5) {
             this.rotation += Math.PI / 80
@@ -210,8 +213,11 @@ class Cell extends Circle {
 
             if (obj.meta) {
                 this.stop = true;
-                if (Cell.podiumPlace >= 0)
+                if (Cell.podiumPlace >= 0) {
                     this.fitness += 50 * Cell.podiumPlace--;
+                    console.log('Time for the (' + this.text + '): ' + (Date.now() - Cell.startTime) / 1000 + 's')
+                }
+
             }
         }
 
