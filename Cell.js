@@ -15,8 +15,8 @@ const PODIUM_PLACE = 3;
 
 class Cell extends Circle {
     static count = 0;
-    static inputNodes = 8;
-    static hiddenNodes = 8;
+    static inputNodes = 9;
+    static hiddenNodes = 9;
     static outputNodes = 2;
     static podiumPlace = PODIUM_PLACE;
     static startTime = 0;
@@ -111,6 +111,7 @@ class Cell extends Circle {
         }
 
         input.push(this.velocity.mag())
+        input.push(this.velocity.angleBetween360(new Vector(0, 1).rotate(this.rotation)))
         input.push(this.acceleration.angleBetween360(this.velocity))
         input.push(this.acceleration.mag())
         // input
@@ -128,22 +129,23 @@ class Cell extends Circle {
             return;
         }
 
-        // this.velocity.set(0, 30).rotate(this.rotation)
+        this.velocity.set(0, 60).rotate(this.rotation)
 
         // if (output[0] > 0.5) {
-        this.acceleration = new Vector(0, -6 * (output[0] - 0.5)).rotate(this.rotation)
+        // this.acceleration = new Vector(0, -20 * (output[0] - 0.5)).rotate(this.rotation)
+        // this.acceleration = new Vector(0, 1).rotate(this.rotation).normalize().mult(5 * (output[0] - 0.5))
 
         // }
         // if (output[0] < 0.5) {
         //     this.acceleration = new Vector(0, 5).rotate(this.rotation)
         // }
-
-        if (output[1] > 0.5) {
-            this.rotation += Math.PI / 80
-        }
-        if (output[1] < 0.5) {
-            this.rotation -= Math.PI / 80
-        }
+        this.rotation += (output[1] - 0.5) / 2
+        // if (output[1] > 0.5) {
+        //     this.rotation += Math.PI / 80
+        // }
+        // if (output[1] < 0.5) {
+        //     this.rotation -= Math.PI / 80
+        // }
 
         return resultData;
     }
@@ -209,13 +211,13 @@ class Cell extends Circle {
             let delta = (Date.now() - Cell.startTime) / 1000
             // console.log(delta)
             // this.fitness = Math.pow(obj.index, 1.8) * 2 //+ this.health;
-            this.fitness = Math.pow(obj.index, 1.8) * 3 + 3 * (obj.index * Math.pow(obj.index + 1, 2) / delta);
+            this.fitness = Math.pow(obj.index, 1.8) * 3 + 3 * (obj.index * Math.pow(obj.index + 1, 2.7) / delta);
 
             if (obj.meta) {
                 this.stop = true;
                 if (Cell.podiumPlace >= 0) {
-                    this.fitness += 50 * Cell.podiumPlace--;
-                    console.log('Time for the (' + this.text + '): ' + (Date.now() - Cell.startTime) / 1000 + 's')
+                    this.fitness += obj.index * 7 * Math.pow(Cell.podiumPlace--, 3);
+                    console.log('Time for the (' + this.text + '): ' + (Date.now() - Cell.startTime) / 1000 + 's Fitness:' + this.calcFitness())
                 }
 
             }
@@ -224,11 +226,11 @@ class Cell extends Circle {
 
         if (obj instanceof Line) {
             // this.fitness = 0;
-            this.health -= this.velocity.mag();
+            this.health -= this.velocity.mag() * this.lastSquareIndex / 2
 
             if (this.health <= 0) {
                 // this.position.set(60, 60)
-                this.health = 0;
+                // this.health = 0;
                 this.stop = true;
                 this.velocity.set(0, 0)
             }
@@ -237,8 +239,9 @@ class Cell extends Circle {
     }
 
     calcFitness() {
-        if (this.fitness < 10) return 1
-        return this.fitness //+ this.health * 1
+        let fitness = this.fitness + this.health * 5
+        if (fitness < 10) return 1;
+        return fitness;
     }
 
 }

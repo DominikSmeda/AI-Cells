@@ -1,6 +1,7 @@
 # AI-Cells
 Implementing Intelligent Agents with Neural Network
 
+UPDATE: Currently working on implementing better solution for learning AI with posibbility to conrol speed (curently it drives to slow). So default code is set to constant speed and learning to drive should take less than 15 generations.
 
 You will need:
 - MongoDB Server on your machine listening on default port (27017)
