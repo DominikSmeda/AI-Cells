@@ -129,7 +129,7 @@ class Cell extends Circle {
             return;
         }
 
-        this.velocity.set(0, 60).rotate(this.rotation)
+        this.velocity.set(0, 130 * (output[0] - 0.5)).rotate(this.rotation)
 
         // if (output[0] > 0.5) {
         // this.acceleration = new Vector(0, -20 * (output[0] - 0.5)).rotate(this.rotation)
@@ -139,7 +139,7 @@ class Cell extends Circle {
         // if (output[0] < 0.5) {
         //     this.acceleration = new Vector(0, 5).rotate(this.rotation)
         // }
-        this.rotation += (output[1] - 0.5) / 2
+        this.rotation += (output[1] - 0.5) / 3
         // if (output[1] > 0.5) {
         //     this.rotation += Math.PI / 80
         // }
