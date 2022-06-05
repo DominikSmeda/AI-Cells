@@ -175,6 +175,45 @@ class Matrix {
             }
         }
     }
+
+
+    static cross(m1, m2) {
+        let toUse = Math.ceil(m1.cols * m2.rows / 2);
+        let used1 = 0;
+        let used2 = 0;
+
+        let m = new Matrix(m1.rows, m2.rows);
+
+        m.map((val, row, col) => {
+            let choice = Math.floor(Math.random() * 2);
+
+            if ((choice == 0 && (used1 < toUse)) || used2 >= toUse) {
+                used1++;
+                return m1.matrix[row][col];
+            }
+            else if (used2 < toUse) {
+                used2++;
+                return m2.matrix[row][col];
+            }
+            else {
+                console.log('not compied')
+            }
+        });
+
+        return m;
+    }
+
+    mutate(rate) {
+        this.map((val, row, col) => {
+            if (rate > Math.random()) {
+                console.log('mutate')
+                return Math.random() * 2 - 1
+            }
+            return val;
+        })
+
+        return this;
+    }
 }
 
 export default Matrix;
