@@ -15,7 +15,7 @@ const PODIUM_PLACE = 3;
 
 class Cell extends Circle {
     static count = 0;
-    static inputNodes = 10;
+    static inputNodes = 9;
     static hiddenNodes = 9;
     static outputNodes = 2;
     static podiumPlace = PODIUM_PLACE;
@@ -43,8 +43,6 @@ class Cell extends Circle {
 
         this.stop = false;
         this.brain = null
-
-        this.features = null;
 
         this.health = 1//Math.random() * 40 + 20;
 
@@ -83,10 +81,10 @@ class Cell extends Circle {
         }
 
         check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation), objects), 0);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - this.features.matrix[0][0] / 2), objects), 1);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + this.features.matrix[0][0] / 2), objects), 2);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - this.features.matrix[0][0] / 4), objects), 3);
-        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + this.features.matrix[0][0] / 4), objects), 4);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 2), objects), 1);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 2), objects), 2);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation - Math.PI / 4), objects), 3);
+        check(RayCast.cast(this.position, new Vector(0, 1).rotate(this.rotation + Math.PI / 4), objects), 4);
 
         intersects = intersects.flat();
         let resultData = []
@@ -116,7 +114,6 @@ class Cell extends Circle {
         input.push(this.velocity.angleBetween360(new Vector(0, 1).rotate(this.rotation)))
         input.push(this.acceleration.angleBetween360(this.velocity))
         input.push(this.acceleration.mag())
-        input.push(this.features.matrix[0][0])
         // input
         // input.push(this.health)
 

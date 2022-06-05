@@ -1,7 +1,7 @@
 
 import NeuralNet from './NeuralNetworkLib/NeuralNet.js';
 import Cell from './Cell.js';
-import Matrix from './NeuralNetworkLib/Matrix.js';
+
 
 class Neuroevolution {
     constructor() {
@@ -56,14 +56,9 @@ class Neuroevolution {
             if (noPrototype) {
                 cell.brain = new NeuralNet(Cell.inputNodes, Cell.hiddenNodes, Cell.outputNodes);
                 cell.brain.randomize();
-
-                cell.features = new Matrix(1, 1)
-                cell.features.matrix[0][0] = Math.random();
-                cell.features.multiply(Math.PI)
             }
             else {
                 cell.brain = this.DNAs[i].brain;
-                cell.features = this.DNAs[i].features;
                 console.log('Using Ancestors DNAs')
                 // cell.brain.weights_IH = this.DNAs[i].weights_IH;
                 // cell.brain.weights_HO = this.DNAs[i].weights_HO;
@@ -82,7 +77,6 @@ class Neuroevolution {
         this.population = this.population.sort((a, b) => b.calcFitness() - a.calcFitness());
 
         let brains = this.population.map(el => el.brain);
-        let features = this.population.map(el => el.features);
         let fitness = this.population.map(el => el.calcFitness())//.slice(0, this.population.length / 3);
         let mates = this.pair(fitness)
         // console.log(fitness)
@@ -93,20 +87,7 @@ class Neuroevolution {
             let nn = NeuralNet.cross(brains[mates[i][0]], brains[mates[i][1]]);
             // console.log(nn)
             nn.mutate(this.mutationRate);
-            // let f = Matrix.cross(features[mates[i][0]], features[mates[i][1]]);
-
-            // f.mutate(this.mutationRate);
-            let f = new Matrix(1, 1);
-            f.matrix[0][0] = (features[mates[i][0]].matrix[0][0] + features[mates[i][1]].matrix[0][0]) / 2
-            // console.log(f)
-
-            if (this.mutationRate > Math.random()) {
-                f.matrix[0][0] = Math.random() * Math.PI
-            }
-
-            // console.log(f.matrix)
-
-            this.DNAs.push({ brain: nn, features: f });
+            this.DNAs.push({ brain: nn });
         }
 
         // console.log(this.DNAs)
