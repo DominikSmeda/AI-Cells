@@ -127,6 +127,28 @@
         #settings #save-dna input {
             height: 40px;
         }
+
+        #container {
+            position: relative;
+            /* border: 1px solid red; */
+            width: 100%;
+        }
+
+        #container canvas {
+            position: absolute;
+            margin: 0 auto;
+
+            margin-left: auto;
+            margin-right: auto;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        #neural-network-vizualizer {
+            z-index: 20;
+            background-color: rgba(0, 0, 0, 0.096);
+        }
     </style>
 </head>
 
@@ -157,14 +179,15 @@
             </div>
             <div id="save-dna">
                 <input type="text">
-                <input type="number" min="1" max="1" value="1">
-                <button>Save Best</button>
+                <input id='' type="number" min="1" max="1" value="1">
+                <button id="save-best">Save Best</button>
             </div>
         </div>
     </div>
 
-    <div>
+    <div id="container">
         <canvas id="root" width="900" height="900"></canvas>
+        <canvas id="neural-network-vizualizer" width="900" height="900"></canvas>
     </div>
 
 
@@ -180,18 +203,25 @@
         window.addEventListener('keyup', e => {
             KEYS[e.key] = false;
         })
-
-        const width = 920, height = 900;
+        //w920
+        const width = 900, height = 900;
         ctx = document.getElementById('root').getContext('2d');
+
+
 
         import { Engine2D, Circle, Vector, Line, RayCast, Shapes } from './PhysicsEngine2DLib/main.js';
         import GameManager from './GameManager.js';
         import Cell from './Cell.js';
         import Neuroevolution from './Neuroevolution.js';
+        import NeuralNetworkVizualizer from './NeuralNetworkVisualizer.js';
+
+
+
 
         const game = new GameManager();
         game.setCanvasSize(width, height);
         game.setCtx(ctx);
+
 
 
         let MAPS = [
@@ -219,6 +249,18 @@
             game.addObjects(neuroevolution.population)
 
         })
+
+
+        const vizualizer = new NeuralNetworkVizualizer(document.getElementById('neural-network-vizualizer'));
+        vizualizer.neuroevolution = neuroevolution;
+
+
+
+
+
+
+
+        // ---------------------------------------------------------------
 
         let timer = null;
         window.addEventListener('keydown', (e) => {
@@ -355,6 +397,7 @@
             await fetch('http://localhost:3000/dnas/' + dnaId, { method: 'delete' });
         }
 
+        // ----------------------------------------------------------------
 
         setTimeout(() => {
             // console.log(game.objects)
@@ -362,10 +405,14 @@
 
             game.onUpdate = (dt) => {
                 neuroevolution.update(dt);
+
             }
             // console.log(game.objects);
         }, 500)
 
+        setInterval(() => {
+            vizualizer.update()
+        }, 500)
     </script>
 </body>
 

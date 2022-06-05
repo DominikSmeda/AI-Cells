@@ -48,7 +48,7 @@ class Cell extends Circle {
 
         this.health = 1//Math.random() * 40 + 20;
 
-        this.updateFrequency = 0;
+        this.updateFrequency = 0.1;
         this.lastDeltaTime = 0;
 
         this.lastSquareIndex = 0;

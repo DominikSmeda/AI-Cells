@@ -113,17 +113,30 @@ class Neuroevolution {
     }
 
     pair(fitness) {
-        let probability = [];
-        // console.log(fitness)
-        for (let i = 0; i < fitness.length; i++) {
-            for (let j = 0; j < fitness[i]; j++)
-                probability.push(i);
+
+        let sum = 0;
+        for (let f of fitness) {
+            sum += f;
         }
-        // console.log('probability', probability)
+
+        let weights = fitness.map(f => f / sum);
+        // console.log(weights)
+
         function rand() {
-            let val = probability[Math.floor(Math.random() * probability.length)];
-            return val;
-        }
+            let num = Math.random();
+            let s = 0;
+            let lastIndex = weights.length - 1;
+
+            for (let i = 0; i < lastIndex; ++i) {
+                s += weights[i];
+                if (num < s) {
+                    return i;
+                }
+            }
+
+            return lastIndex;
+        };
+
 
         let mates = [];
 
