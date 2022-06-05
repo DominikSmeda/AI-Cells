@@ -34,6 +34,8 @@ class NeuralNetworkVisualizer {
     }
 
     update(dt) {
+
+        if (!this.visibility) return
         this.render()
 
         if (this.mode == 'BEST') {
