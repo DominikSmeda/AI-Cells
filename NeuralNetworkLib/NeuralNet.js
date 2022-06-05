@@ -23,6 +23,10 @@ class NeuralNet {
         this.bias_H = new Matrix(this.hiddenNodes, 1)
         this.bias_O = new Matrix(this.outputNodes, 1)
 
+        this.inputLabels = [];
+        this.outputLabels = [];
+
+
         this.init();
     }
 

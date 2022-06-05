@@ -1,7 +1,7 @@
 # AI-Cells
 Implementing Intelligent Agents with Neural Network
 
-UPDATE: Currently working on implementing better solution for learning AI with possibility to control acceleration (curently controls speed). 
+UPDATE: NeuralNetworkVizualizer
 
 You will need:
 - MongoDB Server on your machine listening on default port (27017)
@@ -24,9 +24,14 @@ Browser Console Commands:
 
 > saveBest(name) - saves the best DNAs from current generation so you can load them from the Settings Icon (Refresh Needed?)
 
+> autoInterval = x - interval in seconds between next auto run
+
+
 Keyboard:
 > [ Space ] - Run next generation and stops auto run 
 
 > [ Enter ] - Auto run next Generations in (12s interval)
 
 > [ Backspace ] - Stops Auto run
+
+>  [ Tab ] - Show / Hide Neural Network Vizualization

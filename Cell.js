@@ -20,6 +20,8 @@ class Cell extends Circle {
     static outputNodes = 2;
     static podiumPlace = PODIUM_PLACE;
     static startTime = 0;
+    static inputLabels = ['0deg', '-90deg', '+90deg', '-45deg', '+45deg', 'velocity', 'velocityDir', 'acceleration', 'accelerationDir']
+    static outputLabels = ['velocity', 'rotation']
 
     static podiumPlaceReset() {
         Cell.podiumPlace = PODIUM_PLACE;
@@ -46,7 +48,7 @@ class Cell extends Circle {
 
         this.health = 1//Math.random() * 40 + 20;
 
-        this.updateFrequency = 0.1;
+        this.updateFrequency = 0.05;
         this.lastDeltaTime = 0;
 
         this.lastSquareIndex = 0;

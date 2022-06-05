@@ -55,10 +55,14 @@ class Neuroevolution {
             let cell = new Cell(sx, sy, 15);
             if (noPrototype) {
                 cell.brain = new NeuralNet(Cell.inputNodes, Cell.hiddenNodes, Cell.outputNodes);
+                cell.brain.inputLabels = Cell.inputLabels;
+                cell.brain.outputLabels = Cell.outputLabels;
                 cell.brain.randomize();
             }
             else {
                 cell.brain = this.DNAs[i].brain;
+                cell.brain.inputLabels = Cell.inputLabels;
+                cell.brain.outputLabels = Cell.outputLabels;
                 console.log('Using Ancestors DNAs')
                 // cell.brain.weights_IH = this.DNAs[i].weights_IH;
                 // cell.brain.weights_HO = this.DNAs[i].weights_HO;

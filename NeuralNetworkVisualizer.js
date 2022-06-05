@@ -19,6 +19,18 @@ class NeuralNetworkVisualizer {
 
         this.NEURON_SIZE = 16;
         this.PADDING = 60;
+
+        this.visibility = false;
+    }
+
+    toggleVisibility() {
+        if (this.visibility) {
+            this.canvas.style.visibility = 'hidden';
+        }
+        else {
+            this.canvas.style.visibility = 'visible';
+        }
+        this.visibility = !this.visibility;
     }
 
     update(dt) {
@@ -61,14 +73,16 @@ class NeuralNetworkVisualizer {
         this.ctx.fillStyle = "white";
         this.ctx.textAlign = "center";
 
-        this.ctx.fillText("Brain of: " + text, width / 2 + this.PADDING, this.PADDING);
         this.ctx.strokeText("Brain of: " + text, width / 2 + this.PADDING, this.PADDING);
+        this.ctx.fillText("Brain of: " + text, width / 2 + this.PADDING, this.PADDING);
         this.ctx.restore();
 
         let layers = [neuralNetwork.inputNodes, neuralNetwork.hiddenNodes, neuralNetwork.outputNodes];
 
         let weights = [neuralNetwork.weights_IH, neuralNetwork.weights_HO];
         let biases = [neuralNetwork.bias_H, neuralNetwork.bias_O];
+
+
 
         this.ctx.save();
 
@@ -84,6 +98,21 @@ class NeuralNetworkVisualizer {
 
                 // let color = colors[r]
 
+                let tx = (i + 1) * width / (layers.length - 1) + this.PADDING + this.NEURON_SIZE;
+                let ty = r * width / (layers[i + 1]) + this.PADDING + width / (layers[i + 1]) / 2 + this.NEURON_SIZE;
+
+                let bias = biases[i].matrix[r][0];
+                this.ctx.lineWidth = (bias + 1) * 4;
+                let v = 255 - (bias + 1) * 255 / 2;
+
+                this.ctx.beginPath()
+                this.ctx.moveTo(tx, ty - this.NEURON_SIZE);
+                this.ctx.lineTo(tx, ty - this.NEURON_SIZE - 20);
+
+                // this.ctx.strokeStyle = `rgb(${v},${v},${v})`
+                this.ctx.strokeStyle = 'cyan'
+                this.ctx.stroke();
+
                 for (let c = 0; c < matrix.cols; c++) {
                     //i - warstwa z której wychodzą 
                     // r - do którego trafia z warstwy i+1
@@ -92,8 +121,6 @@ class NeuralNetworkVisualizer {
                     let fx = i * width / (layers.length - 1) + this.PADDING + this.NEURON_SIZE;
                     let fy = c * width / (layerNodes) + this.PADDING + width / (layerNodes) / 2 + this.NEURON_SIZE;
 
-                    let tx = (i + 1) * width / (layers.length - 1) + this.PADDING + this.NEURON_SIZE;
-                    let ty = r * width / (layers[i + 1]) + this.PADDING + width / (layers[i + 1]) / 2 + this.NEURON_SIZE;
 
                     let weight = matrix.matrix[r][c];
                     this.ctx.lineWidth = (weight + 1) * 4;
@@ -103,24 +130,18 @@ class NeuralNetworkVisualizer {
                     let color = `rgb(${v},${v},${v})`
 
 
-                    // if (weight > 0) {
-                    //     color = '#0050EF';
-
-                    // } else {
-                    //     color = '#e51400'
-                    // }
-
-
                     this.ctx.strokeStyle = color;
 
                     this.ctx.beginPath();
                     this.ctx.moveTo(fx, fy);
                     this.ctx.lineTo(tx, ty);
                     this.ctx.stroke();
+
                 }
 
             }
         }
+
         this.ctx.restore();
 
         this.ctx.save();
@@ -137,6 +158,36 @@ class NeuralNetworkVisualizer {
                 this.ctx.stroke();
             }
         }
+        this.ctx.restore();
+
+
+
+
+        this.ctx.save();
+
+        this.ctx.font = "16px Arial";
+        this.ctx.strokeStyle = 'black';
+        this.ctx.fillStyle = "white";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = 'top';
+
+        for (let i = 0; i < layers[0]; i++) {
+            let x = 0 * width / (layers[0] - 1) + this.PADDING + this.NEURON_SIZE;
+            let y = i * width / (layers[0]) + this.PADDING + width / (layers[0]) / 2 + this.NEURON_SIZE * 2 + 5;
+
+            this.ctx.strokeText(neuralNetwork.inputLabels[i], x, y);
+            this.ctx.fillText(neuralNetwork.inputLabels[i], x, y);
+        }
+
+        for (let i = 0; i < layers[layers.length - 1]; i++) {
+            // let x = 20;
+            let x = (layers.length - 1) * width / (layers[layers.length - 1]) + this.PADDING + this.NEURON_SIZE;
+            let y = i * width / (layers[layers.length - 1]) + this.PADDING + width / (layers[layers.length - 1]) / 2 + this.NEURON_SIZE * 2 + 5;
+
+            this.ctx.strokeText(neuralNetwork.outputLabels[i], x, y);
+            this.ctx.fillText(neuralNetwork.outputLabels[i], x, y);
+        }
+
         this.ctx.restore();
 
     }

@@ -50,6 +50,8 @@
             border-radius: 4px;
             display: flex;
             visibility: hidden;
+
+            z-index: 20;
         }
 
         #settings #title {
@@ -146,8 +148,8 @@
         }
 
         #neural-network-vizualizer {
-            z-index: 20;
-            background-color: rgba(0, 0, 0, 0.096);
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.393);
         }
     </style>
 </head>
@@ -196,14 +198,7 @@
     <script type="module">
         let randomMap = false;
 
-        var KEYS = {};
-        window.addEventListener('keydown', e => {
-            KEYS[e.key] = true;
-        })
-        window.addEventListener('keyup', e => {
-            KEYS[e.key] = false;
-        })
-        //w920
+
         const width = 900, height = 900;
         ctx = document.getElementById('root').getContext('2d');
 
@@ -264,6 +259,7 @@
 
         let timer = null;
         window.addEventListener('keydown', (e) => {
+            e.preventDefault()
 
             if (e.key == ' ') {
                 clearInterval(timer);
@@ -280,6 +276,9 @@
             if (e.key == 'Backspace') {
                 console.log('Stop auto next generation')
                 clearInterval(timer);
+            }
+            if (e.key == 'Tab') {
+                vizualizer.toggleVisibility();
             }
         })
 
@@ -411,8 +410,10 @@
         }, 500)
 
         setInterval(() => {
+
             vizualizer.update()
-        }, 500)
+
+        }, 300)
     </script>
 </body>
 
