@@ -260,7 +260,7 @@
 
         let timer = null;
         window.addEventListener('keydown', (e) => {
-            e.preventDefault()
+
 
             if (e.key == ' ') {
                 clearInterval(timer);
@@ -279,6 +279,7 @@
                 clearInterval(timer);
             }
             if (e.key == 'Tab') {
+                e.preventDefault()
                 vizualizer.toggleVisibility();
             }
         })
